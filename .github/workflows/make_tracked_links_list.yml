@@ -3,7 +3,7 @@ name: Generate or update list of tracked links
 on:
   workflow_dispatch:
   schedule:
-    - cron: '* * * * *'
+    - cron: '*/10 * * * *'
   push:
     # trigger on updated link crawler rules
     branches:
@@ -13,6 +13,10 @@ on:
 concurrency:
   group: make-tracked-links
   cancel-in-progress: false
+
+# GITHUB_TOKEN instead of a personal token: pushes it makes don't start other workflows.
+permissions:
+  contents: write
 
 jobs:
   make_tracked_links_file:
@@ -25,7 +29,7 @@ jobs:
       - name: Clone.
         uses: actions/checkout@v5
         with:
-          token: ${{ secrets.PAT }}
+          token: ${{ github.token }}
 
       - name: Setup Python.
         uses: actions/setup-python@v5
