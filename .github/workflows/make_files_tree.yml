@@ -3,7 +3,7 @@ name: Fetch new content of tracked links and files
 on:
   workflow_dispatch:
   schedule:
-    - cron: '* * * * *'
+    - cron: '*/10 * * * *'
   push:
     # trigger on updated linkbase
     branches:
@@ -13,6 +13,10 @@ on:
 concurrency:
   group: make-files-tree
   cancel-in-progress: false
+
+# GITHUB_TOKEN instead of a personal token: pushes it makes don't start other workflows.
+permissions:
+  contents: write
 
 jobs:
   fetch_new_content:
@@ -50,7 +54,7 @@ jobs:
       - name: Clone.
         uses: actions/checkout@v5
         with:
-          token: ${{ secrets.PAT }}
+          token: ${{ github.token }}
 
       - name: Setup Python.
         uses: actions/setup-python@v5
